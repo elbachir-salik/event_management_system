@@ -9,6 +9,7 @@ class Event(models.Model):
     time = models.TimeField()
     location = models.CharField(max_length=255)
     is_approved = models.BooleanField(default=False)
+    max_participants = models.PositiveIntegerField()
     organizer = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="events"
     )
