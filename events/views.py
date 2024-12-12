@@ -37,7 +37,27 @@ class ApproveEventView(APIView):
         event.save()
 
         return Response({'message':f'Event {event.name} has been approved'}, status=status.HTTP_200_OK)
+
+class RejectEventView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, event_id):
+        if request.user.role != 'moderator':
+            return Response({"error":"Only moderators can reject events"}, status=status.HTTP_403_FORBIDDEN)
+        
+        try:
+            event = Event.objects.get(id=event_id)
+        except:
+            return Response({"error":"Event Not Found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        event.is_approved = False
+        event.save()
+
+        return Response({'message':f'Event {event.name} has been rejected'}, status=status.HTTP_200_OK)
     
+
+
+
         
 class ListEventsView(APIView):
     serializer_class = EventSerializer
