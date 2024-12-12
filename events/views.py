@@ -39,3 +39,20 @@ class ApproveEventView(APIView):
         return Response({'message':f'Event {event.name} has been approved'}, status=status.HTTP_200_OK)
     
         
+class ListEventsView(APIView):
+    serializer_class = EventSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+
+        if user.role == 'moderator':
+            return Event.objects.all()
+        
+        elif user.role == 'organizer':
+            return Event.Objects.filter(organizer=user)
+        
+        elif user.role == 'participant':
+            return Event.objects.filter(is_approved=True)
+        else:
+            return Event.objects.none()
