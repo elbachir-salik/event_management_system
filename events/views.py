@@ -5,6 +5,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from .models import Event
 from .serializers import EventSerializer
+from tickets.models import Ticket
+from django.db.models import Count
 # Create your views here.
 
 class CreateEventView(APIView):
@@ -76,3 +78,31 @@ class ListEventsView(APIView):
             return Event.objects.filter(is_approved=True)
         else:
             return Event.objects.none()
+        
+
+class EventAnalyticsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        if request.user.role not in ['moderator','organizer']:
+            return Response({'error':'Access denied. Only moderators or organizers can view analytics.'}, status=status.HTTP_403_FORBIDDEN)
+        
+        total_bookings = Ticket.objects.count()
+
+        popular_events = Event.objects.annotate(
+            ticket_count = Count('tickets')
+        ).order_by('-ticket_count')[:5]
+
+
+        data = {
+            'total_bookings': total_bookings,
+            'most_popular_events': [
+                {
+                    'name': event.name,
+                    'ticket_count': event.ticket_count
+                } for event in popular_events
+            ]
+        }
+
+        return Response(data,status=status.HTTP_200_OK)
+    
