@@ -19,7 +19,10 @@ const Login: React.FC = () => {
                 password,
             });
             console.log("Backend Response:", response.data);
+
             const {access, refresh, role} = response.data; 
+
+            
             localStorage.setItem("accessToken", access);
             localStorage.setItem("refreshToken", refresh);
             localStorage.setItem("userRole", role);
