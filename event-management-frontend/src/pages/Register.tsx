@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Register: React.FC = () => {
     const [username, setUsername] = useState("");
@@ -7,6 +8,8 @@ const Register: React.FC = () => {
     const [password, setPassword] = useState("");
     const [role, setRole] = useState("participant"); // Default role
     const [message, setMessage] = useState("");
+
+    const navigate = useNavigate();
 
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -19,6 +22,9 @@ const Register: React.FC = () => {
             });
             console.log(response.data)
             setMessage("Registration successful! You can now log in.");
+            setTimeout(() =>{
+                navigate("/login")
+            }, 2000)
         } catch (err) {
             console.error(err);
             setMessage("Registration failed. Please try again.");
@@ -61,6 +67,7 @@ const Register: React.FC = () => {
                     <select value={role} onChange={(e) => setRole(e.target.value)}>
                         <option value="participant">Participant</option>
                         <option value="organizer">Organizer</option>
+                        <option value="moderator">Moderator</option>
                     </select>
                 </div>
                 <button type="submit">Register</button>
