@@ -1,10 +1,15 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
 
 const Login: React.FC = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+
+    const navigate = useNavigate();
+
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -13,9 +18,18 @@ const Login: React.FC = () => {
                 username,
                 password,
             });
-            const token = response.data.access; // Retrieve the JWT token
-            localStorage.setItem("token", token); // Store it in localStorage
-            setError(""); // Clear any error messages
+            console.log("Backend Response:", response.data);
+            const {access, refresh, role} = response.data; 
+            localStorage.setItem("accessToken", access);
+            localStorage.setItem("refreshToken", refresh);
+            localStorage.setItem("userRole", role);
+            console.log("User Role:", role);
+
+
+            if(role === "participant") navigate("/dashboard/participant")
+            else if (role === "organizer") navigate("/dashboard/organizer")
+            else if (role === "moderator") navigate("/dashboard/moderator")
+
             alert("Login successful!");
         } catch (err) {
             console.error(err);
