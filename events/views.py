@@ -65,19 +65,22 @@ class ListEventsView(APIView):
     serializer_class = EventSerializer
     permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
+    def get(self, request, *args, **kwargs):
         user = self.request.user
 
         if user.role == 'moderator':
-            return Event.objects.all()
+            events =  Event.objects.all()
         
         elif user.role == 'organizer':
-            return Event.Objects.filter(organizer=user)
+            events = Event.objects.filter(organizer=user)
         
         elif user.role == 'participant':
-            return Event.objects.filter(is_approved=True)
+            events = Event.objects.filter(is_approved=True)
         else:
-            return Event.objects.none()
+            events = Event.objects.none()
+
+        serializer = self.serializer_class(events, many=True)
+        return Response(serializer.data)
         
 
 class EventAnalyticsView(APIView):

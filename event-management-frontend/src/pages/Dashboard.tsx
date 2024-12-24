@@ -1,6 +1,6 @@
 import React from "react";
 import CreateEvent from "../components/CreateEvent";
-
+import ApprovedEvents from "../components/ApprovedEvents";
 
 const Dashboard: React.FC = () => {
     const role = localStorage.getItem("userRole");
@@ -9,7 +9,12 @@ const Dashboard: React.FC = () => {
     const renderContent = () => {
         switch (role) {
             case "participant":
-                return <p>Welcome, Participant! Here are some events for you.</p>;
+                return (
+                    <div>
+                        <p>Welcome, Participant! Here are some events for you.</p>
+                        <ApprovedEvents />
+                    </div>
+                );
             case "organizer":
                 return (
                     <div>
