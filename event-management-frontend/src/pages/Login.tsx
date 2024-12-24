@@ -18,7 +18,6 @@ const Login: React.FC = () => {
                 username,
                 password,
             });
-            console.log("Backend Response:", response.data);
 
             const {access, refresh, role} = response.data; 
 
@@ -26,13 +25,8 @@ const Login: React.FC = () => {
             localStorage.setItem("accessToken", access);
             localStorage.setItem("refreshToken", refresh);
             localStorage.setItem("userRole", role);
-            console.log("User Role:", role);
 
-
-            if(role === "participant") navigate("/dashboard/participant")
-            else if (role === "organizer") navigate("/dashboard/organizer")
-            else if (role === "moderator") navigate("/dashboard/moderator")
-
+            navigate("/dashboard")
             alert("Login successful!");
         } catch (err) {
             console.error(err);
