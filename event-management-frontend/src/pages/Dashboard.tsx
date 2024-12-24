@@ -1,4 +1,5 @@
 import React from "react";
+import CreateEvent from "../components/CreateEvent";
 
 
 const Dashboard: React.FC = () => {
@@ -10,7 +11,12 @@ const Dashboard: React.FC = () => {
             case "participant":
                 return <p>Welcome, Participant! Here are some events for you.</p>;
             case "organizer":
-                return <p>Welcome, Organizer! Here are your event management tools.</p>;
+                return (
+                    <div>
+                        <p>Welcome, Organizer! Here are your event management tools.</p>
+                        <CreateEvent /> 
+                    </div>
+                );
             case "moderator":
                 return <p>Welcome, Moderator! Here are the events to review.</p>;
             default:
