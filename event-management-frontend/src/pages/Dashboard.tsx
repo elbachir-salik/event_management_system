@@ -1,6 +1,7 @@
 import React from "react";
 import CreateEvent from "../components/CreateEvent";
 import ApprovedEvents from "../components/ApprovedEvents";
+import ModerationPanel from "../components/ModerationPanel";
 
 const Dashboard: React.FC = () => {
     const role = localStorage.getItem("userRole");
@@ -12,7 +13,7 @@ const Dashboard: React.FC = () => {
                 return (
                     <div>
                         <p>Welcome, Participant! Here are some events for you.</p>
-                        <ApprovedEvents />
+                        <ApprovedEvents /> 
                     </div>
                 );
             case "organizer":
@@ -23,7 +24,12 @@ const Dashboard: React.FC = () => {
                     </div>
                 );
             case "moderator":
-                return <p>Welcome, Moderator! Here are the events to review.</p>;
+                return (
+                    <div>
+                        <p>Welcome, Moderator! Here are the events to review.</p>
+                        <ModerationPanel />
+                    </div>
+                );
             default:
                 return <p>Role not recognized. Please contact support.</p>;
         }
