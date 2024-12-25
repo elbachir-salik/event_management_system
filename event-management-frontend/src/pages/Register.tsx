@@ -1,6 +1,21 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import {
+    Box,
+    Button,
+    TextField,
+    Typography,
+    Container,
+    Alert,
+    IconButton,
+    InputAdornment,
+    Select,
+    MenuItem,
+    FormControl,
+    InputLabel,
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const Register: React.FC = () => {
     const [username, setUsername] = useState("");
@@ -8,6 +23,8 @@ const Register: React.FC = () => {
     const [password, setPassword] = useState("");
     const [role, setRole] = useState("participant"); // Default role
     const [message, setMessage] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+    const [error, setError] = useState("");
 
     const navigate = useNavigate();
 
@@ -22,6 +39,7 @@ const Register: React.FC = () => {
             });
             console.log(response.data)
             setMessage("Registration successful! You can now log in.");
+            setError("")
             setTimeout(() =>{
                 navigate("/login")
             }, 2000)
@@ -31,49 +49,113 @@ const Register: React.FC = () => {
         }
     };
 
+    const handleTogglePassword = () => {
+        setShowPassword((prev) => !prev);
+    };
+
+
     return (
-        <div>
-            <h1>Register</h1>
-            <form onSubmit={handleRegister}>
-                <div>
-                    <label>Username:</label>
-                    <input
-                        type="text"
+        <Container maxWidth="xs">
+            <Box
+                sx={{
+                    marginTop: 8,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                }}
+            >
+                <Typography component="h1" variant="h5">
+                    Register
+                </Typography>
+                {message && (
+                    <Alert severity="success" sx={{ mt: 2 }}>
+                        {message}
+                    </Alert>
+                )}
+                {error && (
+                    <Alert severity="error" sx={{ mt: 2 }}>
+                        {error}
+                    </Alert>
+                )}
+                <Box
+                    component="form"
+                    onSubmit={handleRegister}
+                    noValidate
+                    sx={{ mt: 3 }}
+                >
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="username"
+                        label="Username"
+                        name="username"
+                        autoComplete="username"
+                        autoFocus
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
-                        required
                     />
-                </div>
-                <div>
-                    <label>Email:</label>
-                    <input
-                        type="email"
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="email"
+                        label="Email"
+                        name="email"
+                        autoComplete="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        required
                     />
-                </div>
-                <div>
-                    <label>Password:</label>
-                    <input
-                        type="password"
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="password"
+                        label="Password"
+                        type={showPassword ? "text" : "password"} // Dynamically toggle password visibility
+                        id="password"
+                        autoComplete="current-password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        required
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        onClick={handleTogglePassword}
+                                        edge="end"
+                                        aria-label="toggle password visibility"
+                                    >
+                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                        }}
                     />
-                </div>
-                <div>
-                    <label>Role:</label>
-                    <select value={role} onChange={(e) => setRole(e.target.value)}>
-                        <option value="participant">Participant</option>
-                        <option value="organizer">Organizer</option>
-                        <option value="moderator">Moderator</option>
-                    </select>
-                </div>
-                <button type="submit">Register</button>
-            </form>
-            {message && <p>{message}</p>}
-        </div>
+                    <FormControl fullWidth margin="normal">
+                        <InputLabel id="role-select-label">Role</InputLabel>
+                        <Select
+                            labelId="role-select-label"
+                            id="role"
+                            value={role}
+                            label="Role"
+                            onChange={(e) => setRole(e.target.value)}
+                        >
+                            <MenuItem value="participant">Participant</MenuItem>
+                            <MenuItem value="organizer">Organizer</MenuItem>
+                            <MenuItem value="moderator">Moderator</MenuItem>
+                        </Select>
+                    </FormControl>
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        sx={{ mt: 3, mb: 2 }}
+                    >
+                        Register
+                    </Button>
+                </Box>
+            </Box>
+        </Container>
     );
 };
 
