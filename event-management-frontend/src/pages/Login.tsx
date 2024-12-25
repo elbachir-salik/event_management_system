@@ -1,13 +1,23 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
+import {
+    Box,
+    Button,
+    TextField,
+    Typography,
+    Container,
+    Alert,
+    IconButton,
+    InputAdornment,
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const Login: React.FC = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
-
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
 
@@ -33,33 +43,82 @@ const Login: React.FC = () => {
             setError("Invalid username or password!");
         }
     };
+    const handleTogglePassword = () => {
+    setShowPassword((prev) => !prev);
+  };
 
     return (
-        <div>
-            <h1>Login</h1>
-            <form onSubmit={handleLogin}>
-                <div>
-                    <label>Username:</label>
-                    <input
-                        type="text"
+        <Container maxWidth="xs">
+            <Box
+                sx={{
+                    marginTop: 8,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                }}
+            >
+                <Typography component="h1" variant="h5">
+                    Login
+                </Typography>
+                {error && (
+                    <Alert severity="error" sx={{ marginTop: 2 }}>
+                        {error}
+                    </Alert>
+                )}
+                <Box
+                    component="form"
+                    onSubmit={handleLogin}
+                    noValidate
+                    sx={{ mt: 3 }}
+                >
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="username"
+                        label="Username"
+                        name="username"
+                        autoComplete="username"
+                        autoFocus
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
-                        required
                     />
-                </div>
-                <div>
-                    <label>Password:</label>
-                    <input
-                        type="password"
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="password"
+                        label="Password"
+                        type={showPassword ? "text" : "password"} // Dynamically change input type
+                        id="password"
+                        autoComplete="current-password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        required
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        onClick={handleTogglePassword}
+                                        edge="end"
+                                        aria-label="toggle password visibility"
+                                    >
+                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                        }}
                     />
-                </div>
-                <button type="submit">Login</button>
-                {error && <p style={{ color: "red" }}>{error}</p>}
-            </form>
-        </div>
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        sx={{ mt: 3, mb: 2 }}
+                    >
+                        Login
+                    </Button>
+                </Box>
+            </Box>
+        </Container>
     );
 };
 
