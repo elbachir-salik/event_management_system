@@ -2,6 +2,8 @@ import React from "react";
 import CreateEvent from "../components/CreateEvent";
 import ApprovedEvents from "../components/ApprovedEvents";
 import ModerationPanel from "../components/ModerationPanel";
+import EventAnalytics from "../components/EventAnalytics";
+
 
 const Dashboard: React.FC = () => {
     const role = localStorage.getItem("userRole");
@@ -21,6 +23,7 @@ const Dashboard: React.FC = () => {
                     <div>
                         <p>Welcome, Organizer! Here are your event management tools.</p>
                         <CreateEvent /> 
+                        <EventAnalytics />
                     </div>
                 );
             case "moderator":
@@ -28,6 +31,7 @@ const Dashboard: React.FC = () => {
                     <div>
                         <p>Welcome, Moderator! Here are the events to review.</p>
                         <ModerationPanel />
+                        <EventAnalytics />
                     </div>
                 );
             default:
