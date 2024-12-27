@@ -1,5 +1,16 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import {
+    Box,
+    Typography,
+    Card,
+    CardContent,
+    CardActions,
+    Button,
+    Grid,
+    Alert,
+    CircularProgress,
+} from "@mui/material";
 
 interface Event {
     id: number;
@@ -52,8 +63,8 @@ const ApprovedEvents: React.FC = () => {
                 }
             );
             setMessage(`Successfully booked a ticket for event ID: ${eventId}`);
-            console.log(response)
-            // Optional: Update the event list to reflect available spots
+            console.log(response);
+            // Update the event list to reflect available spots
             setEvents((prevEvents) =>
                 prevEvents.map((event) =>
                     event.id === eventId
@@ -68,44 +79,73 @@ const ApprovedEvents: React.FC = () => {
     };
 
     if (loading) {
-        return <p>Loading approved events...</p>;
+        return (
+            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "50vh" }}>
+                <CircularProgress />
+            </Box>
+        );
     }
 
     if (error) {
-        return <p style={{ color: "red" }}>{error}</p>;
+        return <Alert severity="error">{error}</Alert>;
     }
 
     return (
-        <div>
-            <h2>Approved Events</h2>
-            {message && <p>{message}</p>}
+        <Box sx={{ p: 3 }}>
+            <Typography variant="h4" gutterBottom>
+                Approved Events
+            </Typography>
+            {message && <Alert severity="success">{message}</Alert>}
             {events.length === 0 ? (
-                <p>No approved events available.</p>
+                <Typography variant="h6" color="textSecondary">
+                    No approved events available.
+                </Typography>
             ) : (
-                <ul>
+                <Grid container spacing={3}>
                     {events.map((event) => (
-                        <li key={event.id}>
-                            <h3>{event.name}</h3>
-                            <p>{event.description}</p>
-                            <p>Date: {event.date}</p>
-                            <p>Time: {event.time}</p>
-                            <p>Location: {event.location}</p>
-                            <p>
-                                Spots Available: {event.max_participants - event.tickets}/
-                                {event.max_participants}
-                            </p>
-                            <button
-                                onClick={() => handleBookTicket(event.id)}
-                                disabled={event.tickets >= event.max_participants} >
-                                {event.tickets >= event.max_participants
-                                    ? "Sold Out"
-                                    : "Book Ticket"}
-                            </button>
-                        </li>
+                        <Grid item xs={12} sm={6} md={4} key={event.id}>
+                            <Card>
+                                <CardContent>
+                                    <Typography variant="h5" component="div">
+                                        {event.name}
+                                    </Typography>
+                                    <Typography color="textSecondary">
+                                        {event.description}
+                                    </Typography>
+                                    <Typography color="textSecondary">
+                                        Date: {event.date}
+                                    </Typography>
+                                    <Typography color="textSecondary">
+                                        Time: {event.time}
+                                    </Typography>
+                                    <Typography color="textSecondary">
+                                        Location: {event.location}
+                                    </Typography>
+                                    <Typography color="textSecondary">
+                                        Spots Available:{" "}
+                                        {event.max_participants - event.tickets}/
+                                        {event.max_participants}
+                                    </Typography>
+                                </CardContent>
+                                <CardActions>
+                                    <Button
+                                        size="small"
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={() => handleBookTicket(event.id)}
+                                        disabled={event.tickets >= event.max_participants}
+                                    >
+                                        {event.tickets >= event.max_participants
+                                            ? "Sold Out"
+                                            : "Book Ticket"}
+                                    </Button>
+                                </CardActions>
+                            </Card>
+                        </Grid>
                     ))}
-                </ul>
+                </Grid>
             )}
-        </div>
+        </Box>
     );
 };
 

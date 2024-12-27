@@ -1,5 +1,16 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import {
+    Box,
+    Typography,
+    List,
+    ListItem,
+    ListItemText,
+    ListItemSecondaryAction,
+    Button,
+    CircularProgress,
+    Alert,
+} from "@mui/material";
 
 interface Event {
     id: number;
@@ -27,7 +38,7 @@ const ModerationPanel: React.FC = () => {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                setEvents(response.data); // Fetch all events for moderators
+                setEvents(response.data);
             } catch (err) {
                 console.error(err);
                 setMessage("Failed to fetch events. Please try again later.");
@@ -35,11 +46,9 @@ const ModerationPanel: React.FC = () => {
                 setLoading(false);
             }
         };
-        
+
         fetchAllEvents();
     }, []);
-
-    
 
     const handleApprove = async (eventId: number) => {
         try {
@@ -78,7 +87,9 @@ const ModerationPanel: React.FC = () => {
                 }
             );
             setMessage(`Event ${eventId} rejected successfully.`);
-            setEvents((prevEvents) => prevEvents.filter((event) => event.id !== eventId));
+            setEvents((prevEvents) =>
+                prevEvents.filter((event) => event.id !== eventId)
+            );
         } catch (err) {
             console.error(err);
             setMessage("Failed to reject the event.");
@@ -86,34 +97,73 @@ const ModerationPanel: React.FC = () => {
     };
 
     return (
-        <div>
-            <h2>Moderation Panel</h2>
-            {message && <p>{message}</p>}
-            {loading ? (
-                <p>Loading events...</p>
-            ) : events.length === 0 ? (
-                <p>No events available for moderation.</p>
-            ) : (
-                <ul>
-                    {events.map((event) => (
-                        <li key={event.id}>
-                            <h3>{event.name}</h3>
-                            <p>{event.description}</p>
-                            <p>Date: {event.date}</p>
-                            <p>Time: {event.time}</p>
-                            <p>Location: {event.location}</p>
-                            <p>Status: {event.is_approved ? "Approved" : "Pending"}</p>
-                            {!event.is_approved && (
-                                <div>
-                                    <button onClick={() => handleApprove(event.id)}>Approve</button>
-                                    <button onClick={() => handleReject(event.id)}>Reject</button>
-                                </div>
-                            )}
-                        </li>
-                    ))}
-                </ul>
+        <Box
+            sx={{
+                maxWidth: "800px",
+                margin: "0 auto",
+                padding: 3,
+                border: "1px solid #ccc",
+                borderRadius: "8px",
+                boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+            }}
+        >
+            <Typography variant="h4" align="center" gutterBottom>
+                Moderation Panel
+            </Typography>
+            {message && (
+                <Alert severity="info" sx={{ marginBottom: 2 }}>
+                    {message}
+                </Alert>
             )}
-        </div>
+            {loading ? (
+                <Box display="flex" justifyContent="center" alignItems="center">
+                    <CircularProgress />
+                </Box>
+            ) : events.length === 0 ? (
+                <Typography variant="body1" align="center">
+                    No events available for moderation.
+                </Typography>
+            ) : (
+                <List>
+                    {events.map((event) => (
+                        <ListItem key={event.id} divider>
+                            <ListItemText
+                                primary={event.name}
+                                secondary={
+                                    <>
+                                        <Typography>Date: {event.date}</Typography>
+                                        <Typography>Time: {event.time}</Typography>
+                                        <Typography>Location: {event.location}</Typography>
+                                        <Typography>
+                                            Status: {event.is_approved ? "Approved" : "Pending"}
+                                        </Typography>
+                                    </>
+                                }
+                            />
+                            {!event.is_approved && (
+                                <ListItemSecondaryAction>
+                                    <Button
+                                        variant="contained"
+                                        color="success"
+                                        onClick={() => handleApprove(event.id)}
+                                        sx={{ marginRight: 1 }}
+                                    >
+                                        Approve
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        color="error"
+                                        onClick={() => handleReject(event.id)}
+                                    >
+                                        Reject
+                                    </Button>
+                                </ListItemSecondaryAction>
+                            )}
+                        </ListItem>
+                    ))}
+                </List>
+            )}
+        </Box>
     );
 };
 

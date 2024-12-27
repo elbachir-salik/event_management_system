@@ -68,7 +68,11 @@ The **Event Management System** is a full-stack web application designed to mana
 4. Run migrations and start the development server:
     
     python manage.py makemigrations
+
+
     python manage.py migrate
+
+
     python manage.py runserver
     
 
